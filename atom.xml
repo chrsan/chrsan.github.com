@@ -1,0 +1,28 @@
+---
+layout: nil
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ <title>Christer Sandberg</title>
+ <link href="http://chrsan.github.com/atom.xml" rel="self"/>
+ <link href="http://chrsan.github.com/"/>
+ <updated>{{ site.time | date_to_xmlschema }}</updated>
+ <id>http://chrsan.github.com/</id>
+ <author>
+   <name>Christer Sandberg</name>
+   <email>chrsan@gmail.com</email>
+ </author>
+ {% for post in site.posts limit:10 %}
+ <entry>
+   <title>{{ post.title }}</title>
+   <link href="http://chrsan.github.com{{ post.url }}"/>
+   <updated>{{ post.date | date_to_xmlschema }}</updated>
+   <id>http://chrsan.github.com{{ post.id }}</id>
+   <content type="html">{{ post.content | xml_escape }}</content>
+   <author>
+     <name>Christer Sandberg</name>
+     <uri>http://chrsan.github.com/</uri>
+   </author>
+ </entry>
+ {% endfor %}
+</feed>

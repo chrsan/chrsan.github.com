@@ -1,0 +1,24 @@
+---
+layout: post
+title: "Twitter Meets Teletext"
+---
+
+h1. {{ page.title }}
+
+At my current client, the Swedish Television (SVT), I was assigned the task of developing an application which would search for tweets from some specified tweeters, and convert those tweets info teletext subtitles. The application is used when broadcasting the Swedish selection heats (Melodifestivalen) for the Eurovision song contest, and the viewers can choose to activate the teletext page 198 to see the tweets as teletext subtitles while watching the show. I was assigned one week of effective time to develop the application, but had already started the design a couple of days earlier.
+
+I'm something of a programming language geek, and have tried many languages over the years. Most of our clients develop on a Java platform (in Java) and that's my primary target platform as well, but for this application I wanted to use a language that wouldn't get in my way and that made me feel more productive since I had such a short time frame. I had been looking into Scala for a while. Reading some books and playing around a bit, but I hadn't used it while developing production quality code. This seemed like a perfect project to give it a spin for real, and so I did.
+
+The first thing I did was developing a Twitter Search API client. I developed my own since I couldn't find an existing one that returned all the tweets when a search result referred to more than one page of tweet entries. We wanted to get all the tweets for a user at the first search when the application starts, and then use the refresh URL for all the later ones when the application is running. It also felt like a good starting point while trying out Scala as a language to implement this.
+
+The second task, which was a bigger challenge, was to develop the module which is responsible for converting the tweets to teletext subtitles, and send those byte streams to the teletext transmitting device. It took a while before finding a spec of how to encode the packages to transmit, and how to perform the conversion from UTF-8 encoded text from the Twitter search result to text that is supported while transmitting teletext subtitles. After some extensive Googling I found an old spec from 1991, the Specification of the EBU Subtitling data exchange format, TECH. 3264-E. After some trial and error, and after some sniffing with Wireshark while sending teletext subtitles with the software used by the subtitlers at SVT, I finally put it all together.
+
+Half way through the development task and I was so excited and pleased with using Scala as my language to implement this. It felt like being born again. All fresh and happy coding. Fewer lines of code, much easier to refactor and and make refinements, and the joy of feeling the power of functional programming. I could go on forever!
+
+The next part was to stitch all this together. In short I created a queue with the tweets converted to teletext packages to transmit. Prior to putting tweets in the queue they are sorted according to their published time stamp at Twitter. One scheduler is responsible for performing the Twitter searches for all the registered tweeters and for adding items to the queue, and one scheduler is responsible for taking items from the queue (if any) and sending them to the teletext transmitter device. The queue is serialized to an external store after any operation that modifies the queue in case of failure.
+
+One of my collegues at SVT, Michael Bjersander, made a web interface that displays all the tweeters and the items in the queue as well as the item currently on air. The person responsible at broadcast can also use the web interface to start and stop the schedulers if wanted, and to add or remove tweeters.
+
+After two shows everything has worked without a glitch. One can argue about the need and the coolness to display tweets as teletext subtitles when one can watch them at a computer, but teletext has more viewers in Sweden than registered Tweeters I read somewhere. For me it was certainly the most fun I had developing for a while, and I'm totally in love with the Scala language.
+
+While writing about Twitter I must send out a thank you to Alex Payne. He let me use his web design for this site.
